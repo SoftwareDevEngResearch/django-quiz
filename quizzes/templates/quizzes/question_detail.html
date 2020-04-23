@@ -1,9 +1,0 @@
-<h1>{{ question.parent_quiz.name }}</h1>
-<h2>{{ question.parent_category.category_name }}</h2>
-<h3>{{ question.question_name }}</h3>
-    {% for answer in question.answer_set.all %}
-        <li>{{ answer.answer_text }}</li>
-    {% endfor %}
-<br>
-
-<a href="{% url 'quizzes:index' %}">Back to Quiz Index</a>
