@@ -1,0 +1,17 @@
+<h1>{{ quiz.name }}</h1>
+
+{% for category,feedback in feed_dict.items %}
+  {% for score in norm_scores.items %}
+<ul>
+    {% if forloop.counter == forloop.parentloop.counter %}
+      <h2>{{ category }}: {{ score.1 }}</h2>
+      {% for questiontext, feedbacktext in feedback.items %}
+      <h3>{{questiontext}}</h3>
+      <li>{{feedbacktext}}</li>
+      {% endfor %}
+    {% endif %}
+</ul>
+  {% endfor %}
+{% endfor %}
+
+<a href="{% url 'quizzes:index' %}">Back to Quiz Index</a>
