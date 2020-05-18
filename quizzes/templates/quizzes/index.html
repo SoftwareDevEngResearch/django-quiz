@@ -1,0 +1,12 @@
+{% if latest_quiz_list %}
+
+{% for quiz in latest_quiz_list %}
+    <ul>
+            <li><a href="{% url 'quizzes:quiz_detail' quiz.id %}">{{ quiz.name }}-Info</a><br>
+                <a href="{% url 'quizzes:new_quiz' quiz.id quiz.question_set.first.id %}">>Take Quiz</a><br>
+            </li>
+    </ul>
+ {% endfor %}
+{% else %}
+    <p>No polls are available.</p>
+{% endif %}

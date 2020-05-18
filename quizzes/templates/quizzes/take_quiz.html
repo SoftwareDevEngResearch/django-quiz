@@ -1,0 +1,13 @@
+<h1>{{ question.parent_quiz.name }}</h1>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<form action="{% url 'quizzes:select_answer' question.parent_quiz.id question.parent_category.id question.id %}" method="post">
+    {% csrf_token %}
+    <h3>{{ question.question_text }}</h3>
+        {% for answer in question.answer_set.all %}
+        <input type="radio" name="answer" id="answer{{ forloop.counter }}" value="{{ answer.id }}">
+        <label for="answer{{ forloop.counter }}">{{ answer.answer_text }}</label><br>
+        {% endfor %}
+    <input type="submit" value="Next">
+</form>

@@ -1,0 +1,6 @@
+<h1>{{ quiz.name }}</h1>
+<u1>
+    {% for category in quiz.category_set.all %}
+        <li><a href="{% url 'quizzes:category_detail' quiz.id category.id %}">{{ category.category_name }}</a></li>
+    {% endfor %}
+</u1>

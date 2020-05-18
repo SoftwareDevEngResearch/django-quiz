@@ -1,0 +1,11 @@
+For take_quiz
+
+    <h3>{{ question.question_text}}</h3>
+        {% for answer in question.answer_set %}
+        <input type="radio" name="choice" id="choice{{ forloop.counter }}" value="{{ choice.id }}">
+        <label for="choice{{ forloop.counter }}">{{ answer.answer_text}}</label><br>
+        {% endfor %}
+    <input type="submit" value="Next Section">
+    {% else %}
+
+For feedback
