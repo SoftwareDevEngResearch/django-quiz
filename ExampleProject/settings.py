@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'quizzes',
     'nested_admin',
+    'xhtml2pdf',
 ]
 
 MIDDLEWARE = [

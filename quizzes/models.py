@@ -1,8 +1,11 @@
 import datetime
+import uuid
 from django.db import models
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from model_utils.managers import InheritanceManager
+from jsonfield import JSONField
+from random import choice
 
 
 # Structure Idea comes from:
@@ -15,7 +18,7 @@ class Quiz(models.Model):
 
     # Question content
     name = models.CharField(_("Quiz Name"), max_length=200, blank=True, null=True)
-    pub_date = models.DateTimeField('date published')
+    pub_date = models.DateTimeField('date created')
     description = models.CharField(_("Quiz Description"), max_length=200, blank=True, null=True)
     active_quiz = models.BooleanField("Active", default=False)
 
@@ -59,6 +62,9 @@ class Quiz(models.Model):
     def session_feedback(self):
         return str(self.id) + "_feedback"
 
+    def session_response_id(self):
+        return str(self.id) + "_response_id"
+
     class Meta:
         verbose_name_plural = 'Quizzes'
         db_table = "quiz"
@@ -99,9 +105,9 @@ class Question(models.Model):
 
     def get_answers(self):
         return [
-                (answer.id, answer.answer_text, answer.answer_weight)
-                for answer in Answer.objects.filter(question=self)
-                ]
+            (answer.id, answer.answer_text, answer.answer_weight)
+            for answer in Answer.objects.filter(question=self)
+        ]
 
     class Meta:
         db_table = "question"
@@ -151,3 +157,26 @@ class Feedback(models.Model):
     class Meta:
         db_table = "feedback"
         verbose_name_plural = 'Feedback'
+
+
+class UserResponse(models.Model):
+    """"""
+    parent_quiz = models.ForeignKey(Quiz, on_delete=models.CASCADE, blank=True, null=True)
+
+    def generate_new_id(self, quiz_id):
+        quiz = Quiz.objects.filter(name=self.parent_quiz.name)
+        range_low = quiz_id*1000
+        range_high = range_low + 999
+        ids = set(range(range_low, range_high))
+        used_ids = set(UserResponse.objects.values_list('response_id', flat=True))
+        return choice(list(ids - used_ids))
+
+    response_id = models.IntegerField(default=generate_new_id, blank=True, null=True)
+    response_data = JSONField(null=True)
+
+    def __str__(self):
+        return str(self.response_id)
+
+    class Meta:
+        db_table = "response"
+        verbose_name_plural = 'Responses'

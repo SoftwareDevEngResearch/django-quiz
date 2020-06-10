@@ -1,12 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<h1>Quiz Index</h1>
+
 {% if latest_quiz_list %}
 
 {% for quiz in latest_quiz_list %}
     <ul>
-            <li><a href="{% url 'quizzes:quiz_detail' quiz.id %}">{{ quiz.name }}-Info</a><br>
-                <a href="{% url 'quizzes:new_quiz' quiz.id quiz.question_set.first.id %}">>Take Quiz</a><br>
-            </li>
+        <li> {{ quiz.name }}
+            <ul><p><a href="{% url 'quizzes:quiz_detail' quiz.id %}">Info</a> |
+                <a href="{% url 'quizzes:start_new_quiz' quiz.id quiz.question_set.first.id %}">Take Quiz</a></p></ul>
+        </li>
     </ul>
  {% endfor %}
+
 {% else %}
     <p>No polls are available.</p>
 {% endif %}
+
+</html>

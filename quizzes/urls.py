@@ -1,5 +1,4 @@
 from django.urls import path
-
 from . import views
 
 app_name = 'quizzes'
@@ -10,18 +9,9 @@ urlpatterns = [
     path('', views.IndexView.as_view(), name='index'),
 
     # ex: /quizzes/1/
-    # Shows all categories of quiz
+    # Shows all categories and questions of quiz
     # The 'name' value as called by the {% url %} template tag
     path('<int:pk>/', views.QuizDetailView.as_view(), name='quiz_detail'),
-
-    # ex: /quizzes/1/1/
-    # Shows all questions in a category
-    # The 'name' value as called by the {% url %} template tag
-    path('<int:pk>/category/<int:pk1>/', views.CategoryDetailView.as_view(), name='category_detail'),
-
-    # # ex: /quizzes/1/category/1/question/1
-    # # Shows all the answer choices to a question
-    path('<int:pk>/category/<int:pk1>/question/<int:pk3>/', views.QuestionDetailView.as_view(), name='question_detail'),
 
     # ex: /quizzes/1/1/question/1
     # Pages through the quiz questions
@@ -30,9 +20,14 @@ urlpatterns = [
     # ex: /quizzes/1/1/question/1/select_answer
     path('<int:quiz_id>/<int:category_id>/<int:question_id>/select_answer/', views.select_answer, name='select_answer'),
 
-    path('<int:quiz_id>/<int:category_id>/startquiz/', views.new_quiz, name='new_quiz'),
+    # nothing is rendered on this page, just a quick jump between the index and take_quiz
+    path('<int:quiz_id>/<int:category_id>/startquiz/', views.start_new_quiz, name='start_new_quiz'),
 
     # ex: /quizzes/1/feedback/user_id
     # Shows the user the feedback for their quiz
-    path('<int:quiz_id>/feedback/', views.feedback, name='feedback'),
+    path('feedback/<int:user_id>/', views.feedback, name='feedback'),
+
+    # ex: /quizzes/1/feedback/user_id
+    # Shows the user the feedback for their quiz
+    path('feedback/<int:user_id>/pdf/', views.get_feedback_pdf, name='get_feedback_pdf'),
 ]

@@ -1,15 +1,18 @@
 <h1>{{ quiz.name }}</h1>
 
+
 {% for item in sorted_scores_limit.items %}
     {% for score in norm_scores.items %}
-        {% if item.1 == score.1 %}
+        {% if item.0 == score.0 %}
         {% for category,feedback in feed_dict.items %}
             {% if forloop.counter == forloop.parentloop.counter %}
             <h2>{{ category }}: {{ score.1 }}</h2>
             <ul>
             {% for questiontext, feedbacktext in feedback.items %}
             <h3>{{questiontext}}</h3>
-            <li>{{feedbacktext}}</li>
+                <ul>
+                <li>{{feedbacktext}}</li>
+                </ul>
             {% endfor %}
             </ul>
             {% endif %}
@@ -18,4 +21,11 @@
     {% endfor %}
 {% endfor %}
 
+<form action="{% url 'quizzes:get_feedback_pdf' user_id %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Get Complete Feedback Report</button>
+</form>
+
 <a href="{% url 'quizzes:index' %}">Back to Quiz Index</a>
+
+</html>

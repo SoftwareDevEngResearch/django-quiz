@@ -1,6 +1,6 @@
 from django.contrib import admin
 import nested_admin
-from .models import Quiz, Category, Question, Answer, Feedback
+from .models import Quiz, Category, Question, Answer, Feedback, UserResponse
 
 
 class AnswerInline(nested_admin.NestedTabularInline):
@@ -51,9 +51,16 @@ class QuizAdmin(nested_admin.NestedModelAdmin):
     """
     inlines = [CategoryInline,]
 
+
 class FeedbackInline(admin.TabularInline):
     model = Feedback
     inlines = [Feedback,]
+
+
+class UserResponseAdmin(admin.ModelAdmin):
+    list_display = ['response_id', 'parent_quiz']
+    ordering = ['parent_quiz']
+    model = UserResponse
 
 
 admin.site.register(Quiz, QuizAdmin)
@@ -61,3 +68,4 @@ admin.site.register(Category)
 admin.site.register(Question)
 admin.site.register(Answer)
 admin.site.register(Feedback)
+admin.site.register(UserResponse, UserResponseAdmin)
