@@ -76,7 +76,7 @@ Add the following to your project's `urls.py`
         path('upload-csv/', quiz_upload, name="quiz_upload"),
     ]
 
-Now make your migrations and migrate your data with `python manage.py makemigrations` and `python manage.py migrate`
+Now, naviagte back to your project directory. Make your migrations and migrate your data with `python manage.py makemigrations` and `python manage.py migrate`
 
 If you have not done so already, create a superuser account `python manage.py createsuperuser`and then check that the sever runs `python manage.py runserver`
 
