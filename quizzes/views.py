@@ -20,7 +20,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published, active quizzes"""
-        return Quiz.objects.filter(active_quiz__lte=True).order_by('-pub_date')[:5]
+        return Quiz.objects.filter(active_quiz=True).order_by('-pub_date')[:5]
 
 
 class QuizDetailView(generic.DetailView):
@@ -28,18 +28,8 @@ class QuizDetailView(generic.DetailView):
     template_name = 'quizzes/quiz_detail.html'
 
     def get_queryset(self):
-        """Return the last five published quizzes"""
-        return Quiz.objects.filter(pub_date__lte=timezone.now())
-
-
-class CategoryDetailView(generic.DetailView):
-    model = Category
-    template_name = 'quizzes/category_detail.html'
-
-
-class QuestionDetailView(generic.DetailView):
-    model = Question
-    template_name = 'quizzes/question_detail.html'
+        """Return the active quizzes"""
+        return Quiz.objects.filter(active_quiz=True).order_by('-pub_date')
 
 
 @permission_required('admin.can_add_log_entry')
@@ -70,11 +60,22 @@ def quiz_upload(request):
     # Create/Update Quiz using first row of csv, check for proper format
     csv_header = next(csv.reader(io_string, delimiter=',', quotechar="|"))
     try:
-        quiz_obj, created = Quiz.objects.update_or_create(
-            name=csv_header[0],
-            pub_date=datetime.datetime.strptime(csv_header[1], '%Y-%m-%d %H:%M:%S.%f'),
-            description=csv_header[2]
-        )
+        # Added an extra layer of error catching, this will try to enter the time in the full datetime format
+        # if not in datetime %Y-%m-%d %H:%M:%S.%f', then it will just try the date given
+        try:
+            quiz_obj, created = Quiz.objects.update_or_create(
+                name=csv_header[0],
+                pub_date=datetime.datetime.strptime(csv_header[1], '%Y-%m-%d %H:%M:%S.%f'),
+                description=csv_header[2],
+                active_quiz=True,
+            )
+        except ValueError:
+            quiz_obj, created = Quiz.objects.update_or_create(
+                name=csv_header[0],
+                pub_date=csv_header[1],
+                description=csv_header[2],
+                active_quiz=True,
+            )
     except IndexError:
         messages.error(request, error_msg)
 
@@ -104,7 +105,7 @@ def quiz_upload(request):
                 answer_selected=False,
                 answer_weight=row[4]
             )
-            answer = Answer.objects.filter(answer_text=row[3]).get()
+            answer = Answer.objects.filter(answer_text=row[3], parent_question=question).get()
             feedback_obj, created = Feedback.objects.update_or_create(
                 parent_quiz=quiz,
                 parent_category=category,
@@ -125,7 +126,7 @@ def quiz_upload(request):
     return render(request, template, context)
 
 
-def create_user_response(request, quiz_id, *args):
+def create_user_response(quiz_id, *args):
     """
     Function to create a new response database entry,
     response_id is left default to be produced with the
@@ -163,15 +164,11 @@ def save_user_feedback(request, user_id):
     quiz_data = request.session[quiz.session_quiz_data()]
     feed_dict = request.session[quiz.session_feedback()]
     norm_scores_dict = request.session[quiz.session_norm_data()]
-    number_of_sections = 2
-    sorted_scores_limited = {k: v
-                             for k, v in sorted(norm_scores_dict.items(), key=lambda item: item[1])[:number_of_sections]
-                             }
 
     # Updating session's UserResponse to
-    create_user_response(request, quiz.id, {'user_id': user_id, 'quiz_dictionary': {'quiz_data': quiz_data,
-                                                                                    'quiz_norm_scores': norm_scores_dict,
-                                                                                    'feedback_data': feed_dict}})
+    create_user_response(quiz.id, {'user_id': user_id, 'quiz_dictionary': {'quiz_data': quiz_data,
+                                                                           'quiz_norm_scores': norm_scores_dict,
+                                                                           'feedback_data': feed_dict}})
 
 
 def start_new_quiz(request, quiz_id, category_id):
@@ -208,7 +205,7 @@ def start_new_quiz(request, quiz_id, category_id):
     request.session[quiz.session_norm_data()] = category_score_data
 
     # # Create new new user response
-    user_id = create_user_response(request, quiz_id)
+    user_id = create_user_response(quiz_id)
     request.session[quiz.session_response_id()] = user_id
 
     return HttpResponseRedirect(
@@ -343,7 +340,11 @@ def get_session_feedback(request, quiz_id):
                     feedback = answer.get_quiz_feedback().get()
                     innerdict.update({question_text: feedback.feedback_text})
                 if answer.answer_weight == 1:
-                    feedback = None
+                    check_feedback = answer.get_quiz_feedback().get()
+                    if check_feedback is "No Feedback":
+                        feedback = None
+                    else:
+                        feedback = check_feedback
                     innerdict.update({question_text: feedback})
         feedback_set.update({category_name: innerdict})
     request.session[quiz.session_feedback()] = feedback_set
@@ -374,11 +375,11 @@ def feedback(request, user_id):
         'feed_dict': feed_dict,
         'norm_scores': norm_scores_dict,
         'sorted_scores_limit': sorted_scores_limited,
-        'user_id':user_id
+        'user_id': user_id
     })
 
 
-@cache_page(60*15)
+@cache_page(60 * 60)
 def get_feedback_pdf(request, user_id):
     """
     This is a feedback page that is rendered as a pdf. Users will be able to access this from the feedback page.

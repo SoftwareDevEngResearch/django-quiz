@@ -1,0 +1,7 @@
+django>=3.0.3
+pytest>=5.4.3
+pytest-django
+django-nested_admin
+xhtml2pdf
+jsonfield
+django-model-utils

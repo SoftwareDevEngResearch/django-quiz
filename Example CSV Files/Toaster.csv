@@ -1,0 +1,17 @@
+Toaster Concept Quiz,2020-06-12,This is an example quiz based on toaster design
+Toaster Concept Quiz,Cost of Product,What material is used for the toaster housing?,Aluminum,1,No Feedback
+Toaster Concept Quiz,Cost of Product,What material is used for the toaster housing?,Steel,0.5,Consider using inexpensive materials
+Toaster Concept Quiz,Cost of Product,What material is used for the toaster housing?,Diamond,0,Consider changing to a metal
+Toaster Concept Quiz,Cost of Product,How does the toaster heat food?,Resistive Heating Elements,1,No Feedback
+Toaster Concept Quiz,Cost of Product,How does the toaster heat food?, Lasers,0, Consider examining other methods of heating food
+Toaster Concept Quiz,Use Integration,Can the toaster heat more than sliced bread?,Yes,1,No Feedback
+Toaster Concept Quiz,Use Integration,Can the toaster heat more than sliced bread?,No,0,|Consider making the heating area larger, users can prep more than sliced bread|
+Toaster Concept Quiz,Use Integration,Can the toaster operate as an oven?,Yes,1,No Feedback
+Toaster Concept Quiz,Use Integration,Can the toaster operate as an oven?,|Yes,but with some modification|,0.5,Consider the stakeholders of your product and possibly redesign
+Toaster Concept Quiz,Use Integration,Can the toaster operate as an oven?,No,0,Consider the stakeholders of your product and possibly redesign
+Toaster Concept Quiz,Safety,Does the toaster have exposed heating elements?,No,1,No Feedback
+Toaster Concept Quiz,Safety,Does the toaster have exposed heating elements?,|Yes,but users cannot easily access|,0.5,Consider if the heating elements need to be exposed at all
+Toaster Concept Quiz,Safety,Does the toaster have exposed heating elements?,|Yes,and users can easily access|,0,Consider covering exposed heating elements
+Toaster Concept Quiz,Safety,Do operators have to reach more than a centimeter into the toaster to retrieve food?,No,1,No Feedback
+Toaster Concept Quiz,Safety,Do operators have to reach more than a centimeter into the toaster to retrieve food?,Depends on the size of the food,0.5,Consider a mechanism that pushes the food up so operators do not have to reach in
+Toaster Concept Quiz,Safety,Do operators have to reach more than a centimeter into the toaster to retrieve food?,Always,0,Considering changing your design so operators will not burn themselves

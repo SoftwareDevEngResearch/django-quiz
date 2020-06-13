@@ -9,10 +9,13 @@
             <h2>{{ category }}: {{ score.1 }}</h2>
             <ul>
             {% for questiontext, feedbacktext in feedback.items %}
-            <h3>{{questiontext}}</h3>
+                {% if feedbacktext == None %}
+                {% else %}
+                <h3>{{questiontext}}</h3>
                 <ul>
                 <li>{{feedbacktext}}</li>
                 </ul>
+                {% endif %}
             {% endfor %}
             </ul>
             {% endif %}

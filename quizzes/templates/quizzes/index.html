@@ -6,16 +6,18 @@
 {% if latest_quiz_list %}
 
 {% for quiz in latest_quiz_list %}
+    {% if quiz.active_quiz is True %}
     <ul>
         <li> {{ quiz.name }}
             <ul><p><a href="{% url 'quizzes:quiz_detail' quiz.id %}">Info</a> |
                 <a href="{% url 'quizzes:start_new_quiz' quiz.id quiz.question_set.first.id %}">Take Quiz</a></p></ul>
         </li>
     </ul>
+    {% endif %}
  {% endfor %}
 
 {% else %}
-    <p>No polls are available.</p>
+    <p>No quizzes are available.</p>
 {% endif %}
 
 </html>

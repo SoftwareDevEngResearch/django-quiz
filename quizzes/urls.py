@@ -23,11 +23,11 @@ urlpatterns = [
     # nothing is rendered on this page, just a quick jump between the index and take_quiz
     path('<int:quiz_id>/<int:category_id>/startquiz/', views.start_new_quiz, name='start_new_quiz'),
 
-    # ex: /quizzes/1/feedback/user_id
+    # ex: /quizzes/feedback/user_id
     # Shows the user the feedback for their quiz
     path('feedback/<int:user_id>/', views.feedback, name='feedback'),
 
-    # ex: /quizzes/1/feedback/user_id
+    # ex: /quizzes/feedback/user_id/pdf
     # Shows the user the feedback for their quiz
     path('feedback/<int:user_id>/pdf/', views.get_feedback_pdf, name='get_feedback_pdf'),
 ]
